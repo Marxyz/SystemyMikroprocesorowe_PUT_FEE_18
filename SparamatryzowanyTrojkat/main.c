@@ -9,7 +9,7 @@
 #define F_OSC 11058000
 #define pars 12
 #define t_resol 16
-#define OKRES 1
+#define OKRES 50
 
 #define Tx_Tau(dzielnik) (float)((float)dzielnik/F_OSC)
 #define Tx_N(czas_ms, dzielnik) (unsigned int)((float)czas_ms/Tx_Tau(dzielnik)/1000.0)
