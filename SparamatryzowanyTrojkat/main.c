@@ -29,7 +29,8 @@ typedef struct
 	double offset;
 	double t;
 	double delta_t;
-	double param;
+	double rosnace;
+    double opadajace;
 }parametry_sygnalu_t;
 
 //float32_t pila(parametry_sygnalu_t* syg)
@@ -45,16 +46,17 @@ float32_t trojkat(parametry_sygnalu_t* syg)
 	double A = syg->amplituda;
 	double T = syg->okres;
 	double off = syg->offset;
-	double param = syg->param;
+	double ros = syg->rosnace;
+    double opad = syg->opadajace;
 	double del = syg->delta_t;
 	time = modulo(syg->t,T);
-	if(time > param + del)
+	if(time > ros )
 	{
-		result = -A  * 1.0 / (T - param) *(time - param) + A + off;
+		result = -A  * 1.0 / (opad) *(time - ros) + A + off;
         return result;
 	}
 		
-	result =   A*time/(param) + off;
+	result =   A*time/(ros) + off;
     return result;
 }
 
@@ -92,11 +94,12 @@ int main()
 	DACCON = 0x7F;
 	TMOD = 0x10;
 	
-	pilaParam.okres = 4.0;
+	pilaParam.okres = 3.0;
 	pilaParam.amplituda = 3.0;
-	pilaParam.offset = 1.5;
+	pilaParam.offset = 0;
 	pilaParam.t = 0.0;
-	pilaParam.param = 1.5;
+	pilaParam.rosnace = 1;
+    pilaParam.opadajace = 2;
 	pilaParam.delta_t = ((float32_t)OKRES/1000.0);
 	
 	T1_Set(OKRES)
