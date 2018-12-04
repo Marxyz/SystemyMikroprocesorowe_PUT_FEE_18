@@ -1,0 +1,4 @@
+".\Objects\main.obj",
+".\Objects\IO.obj" 
+TO ".\Objects\zadanie5" 
+PRINT(".\Listings\zadanie5.m51") RAMSIZE(256) 
