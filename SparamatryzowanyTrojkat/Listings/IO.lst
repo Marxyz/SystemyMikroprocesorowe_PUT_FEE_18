@@ -1,10 +1,10 @@
-C51 COMPILER V9.59.0.0   IO                                                                12/04/2018 02:35:37 PAGE 1   
+C51 COMPILER V9.59.0.0   IO                                                                12/04/2018 22:40:44 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE IO
 OBJECT MODULE PLACED IN .\Objects\IO.obj
 COMPILER INVOKED BY: C:\Users\Arkadiusz\Keil_v5\C51\BIN\C51.EXE IO.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.
-                    -\Listings\IO.lst) TABS(2) OBJECT(.\Objects\IO.obj)
+                    -\Listings\IO.lst) OBJECT(.\Objects\IO.obj)
 
 line level    source
 

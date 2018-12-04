@@ -41,19 +41,21 @@ typedef struct
 
 float32_t trojkat(parametry_sygnalu_t* syg)
 {
-	float32_t t;
+	float32_t time, result;
 	double A = syg->amplituda;
 	double T = syg->okres;
 	double off = syg->offset;
 	double param = syg->param;
 	double del = syg->delta_t;
-	t = modulo(syg->t,T);
-	if(t > param + del)
+	time = modulo(syg->t,T);
+	if(time > param + del)
 	{
-		return (A - A * t * 1.0 / (T - param)) + off;
+		result = -A  * 1.0 / (T - param) *(time - param) + A + off;
+        return result;
 	}
 		
-	return  A*t/(param) + off;
+	result =   A*time/(param) + off;
+    return result;
 }
 
 typedef union
@@ -90,9 +92,9 @@ int main()
 	DACCON = 0x7F;
 	TMOD = 0x10;
 	
-	pilaParam.okres = 2.0;
-	pilaParam.amplituda = 4.0;
-	pilaParam.offset = 0.5;
+	pilaParam.okres = 4.0;
+	pilaParam.amplituda = 3.0;
+	pilaParam.offset = 1.5;
 	pilaParam.t = 0.0;
 	pilaParam.param = 1.5;
 	pilaParam.delta_t = ((float32_t)OKRES/1000.0);

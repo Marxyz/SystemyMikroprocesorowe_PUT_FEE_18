@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    12/04/2018  19:19:14  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    12/04/2018  22:40:45  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
@@ -16,6 +16,7 @@ INPUT MODULES INCLUDED:
   C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPMUL)
   C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPDIV)
   C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPCMP)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPNEG)
   C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FCAST)
   C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51FPS.LIB (?C?CASTF)
   C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPGETOPN)
@@ -38,28 +39,28 @@ LINK MAP OF MODULE:  .\Objects\DAC_Pila (MAIN)
 
             * * * * * * *   D A T A   M E M O R Y   * * * * * * *
             REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
-            DATA    0008H     0020H     UNIT         _DATA_GROUP_
-            DATA    0028H     001EH     UNIT         ?DT?MAIN
-            IDATA   0046H     0001H     UNIT         ?STACK
+            DATA    0008H     0024H     UNIT         _DATA_GROUP_
+            DATA    002CH     001EH     UNIT         ?DT?MAIN
+            IDATA   004AH     0001H     UNIT         ?STACK
 
             * * * * * * *   C O D E   M E M O R Y   * * * * * * *
             CODE    0000H     0003H     ABSOLUTE     
                     0003H     0018H                  *** GAP ***
             CODE    001BH     0003H     ABSOLUTE     
                     001EH     07E2H                  *** GAP ***
-            CODE    0800H     0468H     UNIT         ?C?LIB_CODE
-            CODE    0C68H     00FAH     UNIT         ?PR?_TROJKAT?MAIN
-            CODE    0D62H     00DCH     UNIT         ?PR?TIMER1?MAIN
-            CODE    0E3EH     008CH     UNIT         ?C_C51STARTUP
-            CODE    0ECAH     004FH     UNIT         ?PR?MAIN?MAIN
-            CODE    0F19H     003CH     UNIT         ?PR?_MODULO?MAIN
-            CODE    0F55H     000BH     UNIT         ?C_INITSEG
+            CODE    0800H     0479H     UNIT         ?C?LIB_CODE
+            CODE    0C79H     0118H     UNIT         ?PR?_TROJKAT?MAIN
+            CODE    0D91H     00DCH     UNIT         ?PR?TIMER1?MAIN
+            CODE    0E6DH     008CH     UNIT         ?C_C51STARTUP
+            CODE    0EF9H     0051H     UNIT         ?PR?MAIN?MAIN
+            CODE    0F4AH     003CH     UNIT         ?PR?_MODULO?MAIN
+            CODE    0F86H     000BH     UNIT         ?C_INITSEG
 
 
 
 OVERLAY MAP OF MODULE:   .\Objects\DAC_Pila (MAIN)
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/04/2018  22:40:45  PAGE 2
 
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/04/2018  19:19:14  PAGE 2
 
 
 
@@ -69,10 +70,10 @@ SEGMENT                          DATA_GROUP
 ?PR?TIMER1?MAIN                -----    -----
   +--> ?PR?_TROJKAT?MAIN
 
-?PR?_TROJKAT?MAIN              0008H    0018H
+?PR?_TROJKAT?MAIN              0008H    001CH
   +--> ?PR?_MODULO?MAIN
 
-?PR?_MODULO?MAIN               0020H    0008H
+?PR?_MODULO?MAIN               0024H    0008H
 
 *** NEW ROOT ***************************************************
 
@@ -89,15 +90,15 @@ SYMBOL TABLE OF MODULE:  .\Objects\DAC_Pila (MAIN)
 
   -------         MODULE        MAIN
   C:0000H         SYMBOL        _ICE_DUMMY_
-  D:0028H         PUBLIC        probka
-  C:0C68H         PUBLIC        _trojkat
+  D:002CH         PUBLIC        probka
+  C:0C79H         PUBLIC        _trojkat
   B:00A8H.7       PUBLIC        EA
-  C:0F19H         PUBLIC        _modulo
-  D:002AH         PUBLIC        pilaParam
+  C:0F4AH         PUBLIC        _modulo
+  D:002EH         PUBLIC        pilaParam
   D:00E8H         PUBLIC        I2CCON
   D:00E8H         PUBLIC        DCON
-  C:0ECAH         PUBLIC        main
-  D:0042H         PUBLIC        probka_napiecie
+  C:0EF9H         PUBLIC        main
+  D:0046H         PUBLIC        probka_napiecie
   D:00FDH         PUBLIC        DACCON
   D:0089H         PUBLIC        TMOD
   D:00FAH         PUBLIC        DAC0H
@@ -105,83 +106,86 @@ SYMBOL TABLE OF MODULE:  .\Objects\DAC_Pila (MAIN)
   B:00A8H.3       PUBLIC        ET1
   D:008DH         PUBLIC        TH1
   D:008BH         PUBLIC        TL1
-  C:0D62H         PUBLIC        timer1
+  C:0D91H         PUBLIC        timer1
   B:0088H.6       PUBLIC        TR1
   -------         PROC          _MODULO
-  D:0020H         SYMBOL        a
-  D:0024H         SYMBOL        b
+  D:0024H         SYMBOL        a
+  D:0028H         SYMBOL        b
   -------         DO            
   D:0006H         SYMBOL        result
   -------         ENDDO         
-  C:0F19H         LINE#         19
-  C:0F21H         LINE#         20
-  C:0F21H         LINE#         21
-  C:0F2FH         LINE#         22
+  C:0F4AH         LINE#         19
+  C:0F52H         LINE#         20
+  C:0F52H         LINE#         21
+  C:0F60H         LINE#         22
   -------         ENDPROC       _MODULO
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/04/2018  22:40:45  PAGE 3
+
+
   -------         PROC          _TROJKAT
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/04/2018  19:19:14  PAGE 3
-
-
   D:0001H         SYMBOL        syg
   -------         DO            
-  D:0008H         SYMBOL        t
-  D:000CH         SYMBOL        A
-  D:0010H         SYMBOL        T
-  D:0014H         SYMBOL        off
-  D:0018H         SYMBOL        param
-  D:001CH         SYMBOL        del
+  D:0008H         SYMBOL        time
+  D:000CH         SYMBOL        result
+  D:0010H         SYMBOL        A
+  D:0014H         SYMBOL        T
+  D:0018H         SYMBOL        off
+  D:001CH         SYMBOL        param
+  D:0020H         SYMBOL        del
   -------         ENDDO         
-  C:0C68H         LINE#         42
-  C:0C68H         LINE#         43
-  C:0C68H         LINE#         45
-  C:0C76H         LINE#         46
-  C:0C81H         LINE#         47
-  C:0C8FH         LINE#         48
-  C:0C9DH         LINE#         49
-  C:0CABH         LINE#         50
-  C:0CC8H         LINE#         51
-  C:0CEAH         LINE#         52
-  C:0CEAH         LINE#         53
-  C:0D38H         LINE#         54
-  C:0D38H         LINE#         56
-  C:0D61H         LINE#         57
+  C:0C79H         LINE#         42
+  C:0C79H         LINE#         43
+  C:0C79H         LINE#         45
+  C:0C87H         LINE#         46
+  C:0C92H         LINE#         47
+  C:0CA0H         LINE#         48
+  C:0CAEH         LINE#         49
+  C:0CBCH         LINE#         50
+  C:0CD9H         LINE#         51
+  C:0CFBH         LINE#         52
+  C:0CFBH         LINE#         53
+  C:0D5DH         LINE#         54
+  C:0D5FH         LINE#         55
+  C:0D5FH         LINE#         57
+  C:0D90H         LINE#         58
+  C:0D90H         LINE#         59
   -------         ENDPROC       _TROJKAT
   -------         PROC          TIMER1
-  C:0D62H         LINE#         73
-  C:0D7FH         LINE#         75
-  C:0D85H         LINE#         76
-  C:0DA0H         LINE#         77
-  C:0DC3H         LINE#         78
-  C:0DD4H         LINE#         79
-  C:0E03H         LINE#         80
-  C:0E1DH         LINE#         81
-  C:0E20H         LINE#         82
-  C:0E23H         LINE#         83
+  C:0D91H         LINE#         75
+  C:0DAEH         LINE#         77
+  C:0DB4H         LINE#         78
+  C:0DCFH         LINE#         79
+  C:0DF2H         LINE#         80
+  C:0E03H         LINE#         81
+  C:0E32H         LINE#         82
+  C:0E4CH         LINE#         83
+  C:0E4FH         LINE#         84
+  C:0E52H         LINE#         85
   -------         ENDPROC       TIMER1
   -------         PROC          MAIN
-  C:0ECAH         LINE#         85
-  C:0ECAH         LINE#         86
-  C:0ECAH         LINE#         88
-  C:0ECCH         LINE#         89
-  C:0ECEH         LINE#         90
-  C:0ED1H         LINE#         91
-  C:0ED4H         LINE#         93
-  C:0EDEH         LINE#         94
-  C:0EE8H         LINE#         95
-  C:0EF1H         LINE#         96
-  C:0EF9H         LINE#         97
-  C:0F03H         LINE#         98
-  C:0F0FH         LINE#         100
-  C:0F15H         LINE#         101
-  C:0F17H         LINE#         102
+  C:0EF9H         LINE#         87
+  C:0EF9H         LINE#         88
+  C:0EF9H         LINE#         90
+  C:0EFBH         LINE#         91
+  C:0EFDH         LINE#         92
+  C:0F00H         LINE#         93
+  C:0F03H         LINE#         95
+  C:0F0EH         LINE#         96
+  C:0F18H         LINE#         97
+  C:0F22H         LINE#         98
+  C:0F2AH         LINE#         99
+  C:0F34H         LINE#         100
+  C:0F40H         LINE#         102
+  C:0F46H         LINE#         103
+  C:0F48H         LINE#         104
   -------         ENDPROC       MAIN
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/04/2018  22:40:45  PAGE 4
+
+
   -------         ENDMOD        MAIN
 
   -------         MODULE        IO
   C:0000H         SYMBOL        _ICE_DUMMY_
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/04/2018  19:19:14  PAGE 4
-
-
   -------         ENDMOD        IO
 
   -------         MODULE        ?C?FPADD
@@ -202,50 +206,54 @@ SYMBOL TABLE OF MODULE:  .\Objects\DAC_Pila (MAIN)
   C:0A9EH         PUBLIC        ?C?FPCMP3
   -------         ENDMOD        ?C?FPCMP
 
+  -------         MODULE        ?C?FPNEG
+  C:0B17H         PUBLIC        ?C?FPNEG
+  -------         ENDMOD        ?C?FPNEG
+
   -------         MODULE        ?C?FCAST
-  C:0B21H         PUBLIC        ?C?FCASTC
-  C:0B1CH         PUBLIC        ?C?FCASTI
-  C:0B17H         PUBLIC        ?C?FCASTL
+  C:0B32H         PUBLIC        ?C?FCASTC
+  C:0B2DH         PUBLIC        ?C?FCASTI
+  C:0B28H         PUBLIC        ?C?FCASTL
   -------         ENDMOD        ?C?FCAST
 
   -------         MODULE        ?C?CASTF
-  C:0B55H         PUBLIC        ?C?CASTF
+  C:0B66H         PUBLIC        ?C?CASTF
   -------         ENDMOD        ?C?CASTF
 
   -------         MODULE        ?C?LNEG
-  C:0BD6H         PUBLIC        ?C?LNEG
+  C:0BE7H         PUBLIC        ?C?LNEG
   -------         ENDMOD        ?C?LNEG
 
   -------         MODULE        ?C?LLDPTR
-  C:0BE4H         PUBLIC        ?C?LLDPTR
+  C:0BF5H         PUBLIC        ?C?LLDPTR
   -------         ENDMOD        ?C?LLDPTR
 
   -------         MODULE        ?C?LLDOPTR
-  C:0C04H         PUBLIC        ?C?LLDOPTR
+  C:0C15H         PUBLIC        ?C?LLDOPTR
   -------         ENDMOD        ?C?LLDOPTR
 
   -------         MODULE        ?C?LLDIDATA
-  C:0C34H         PUBLIC        ?C?LLDIDATA
+  C:0C45H         PUBLIC        ?C?LLDIDATA
   -------         ENDMOD        ?C?LLDIDATA
 
   -------         MODULE        ?C?LLDXDATA
-  C:0C40H         PUBLIC        ?C?LLDXDATA
+  C:0C51H         PUBLIC        ?C?LLDXDATA
   -------         ENDMOD        ?C?LLDXDATA
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/04/2018  22:40:45  PAGE 5
+
+
 
   -------         MODULE        ?C?LLDPDATA
-  C:0C4CH         PUBLIC        ?C?LLDPDATA
+  C:0C5DH         PUBLIC        ?C?LLDPDATA
   -------         ENDMOD        ?C?LLDPDATA
 
   -------         MODULE        ?C?LLDCODE
-  C:0C58H         PUBLIC        ?C?LLDCODE
+  C:0C69H         PUBLIC        ?C?LLDCODE
   -------         ENDMOD        ?C?LLDCODE
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/04/2018  19:19:14  PAGE 5
-
-
 
 ******************************************************************************
-* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 026EH BYTE (30%) *
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 028EH BYTE (31%) *
 ******************************************************************************
 
-Program Size: data=71.0 xdata=0 code=1894
+Program Size: data=75.0 xdata=0 code=1943
 LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
