@@ -1,0 +1,4 @@
+".\Objects\main.obj",
+".\Objects\IO.obj" 
+TO ".\Objects\DAC_Pila" 
+PRINT(".\Listings\DAC_Pila.m51") RAMSIZE(256) 

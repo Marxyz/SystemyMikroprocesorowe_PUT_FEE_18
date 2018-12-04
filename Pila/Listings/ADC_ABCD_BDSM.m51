@@ -1,0 +1,330 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    12/04/2018  20:11:18  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+C:\USERS\ARKADIUSZ\KEIL_V5\C51\BIN\BL51.EXE .\Objects\main.obj, .\Objects\IO.obj TO .\Objects\ADC_ABCD_BDSM PRINT (.\Lis
+>> tings\ADC_ABCD_BDSM.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL WITH FLOATING POINT ARITHMETIC
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\main.obj (MAIN)
+  .\Objects\IO.obj (IO)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPADD)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPMUL)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPDIV)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPCMP)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FCAST)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51FPS.LIB (?C?CASTF)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPGETOPN)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51S.LIB (?C?LNEG)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDPTR)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDOPTR)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDPTR0)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDOPTR0)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDIDATA)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDXDATA)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDPDATA)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDCODE)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDIDATA0)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDXDATA0)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDPDATA0)
+  C:\USERS\ARKADIUSZ\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDCODE0)
+
+
+LINK MAP OF MODULE:  .\Objects\ADC_ABCD_BDSM (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0030H     UNIT         _DATA_GROUP_
+            DATA    0038H     001AH     UNIT         ?DT?MAIN
+            IDATA   0052H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     0018H                  *** GAP ***
+            CODE    001BH     0003H     ABSOLUTE     
+                    001EH     07E2H                  *** GAP ***
+            CODE    0800H     04EEH     UNIT         ?C?LIB_CODE
+            CODE    0CEEH     0106H     UNIT         ?PR?TIMER1?MAIN
+            CODE    0DF4H     008CH     UNIT         ?C_C51STARTUP
+            CODE    0E80H     0054H     UNIT         ?PR?_PILA?MAIN
+            CODE    0ED4H     0045H     UNIT         ?PR?_CALCULATETIMERHITCOUNT?MAIN
+            CODE    0F19H     0044H     UNIT         ?PR?MAIN?MAIN
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/04/2018  20:11:18  PAGE 2
+
+
+            CODE    0F5DH     003CH     UNIT         ?PR?_MODULO?MAIN
+            CODE    0F99H     002CH     UNIT         ?PR?_SETTIMERREGISTERS?MAIN
+            CODE    0FC5H     001BH     UNIT         ?PR?_SECONDSPERHIT?MAIN
+            CODE    0FE0H     000BH     UNIT         ?C_INITSEG
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\ADC_ABCD_BDSM (MAIN)
+
+
+SEGMENT                                    DATA_GROUP 
+  +--> CALLED SEGMENT                    START    LENGTH
+--------------------------------------------------------
+?PR?TIMER1?MAIN                          -----    -----
+  +--> ?PR?_SETTIMERREGISTERS?MAIN
+  +--> ?PR?_PILA?MAIN
+
+?PR?_SETTIMERREGISTERS?MAIN              0020H    0004H
+  +--> ?PR?_CALCULATETIMERHITCOUNT?MAIN
+
+?PR?_CALCULATETIMERHITCOUNT?MAIN         0024H    000EH
+  +--> ?PR?_SECONDSPERHIT?MAIN
+
+?PR?_SECONDSPERHIT?MAIN                  0032H    0006H
+
+?PR?_PILA?MAIN                           0008H    0003H
+  +--> ?PR?_MODULO?MAIN
+
+?PR?_MODULO?MAIN                         000BH    0008H
+
+*** NEW ROOT ***************************************************
+
+?C_C51STARTUP                            -----    -----
+  +--> ?PR?MAIN?MAIN
+  +--> ?C_INITSEG
+
+?PR?MAIN?MAIN                            -----    -----
+  +--> ?PR?_SETTIMERREGISTERS?MAIN
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\ADC_ABCD_BDSM (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0038H         PUBLIC        probka
+  B:00A8H.7       PUBLIC        EA
+  C:0F5DH         PUBLIC        _modulo
+  D:003AH         PUBLIC        pilaParam
+  D:00E8H         PUBLIC        I2CCON
+  C:0FC5H         PUBLIC        _SecondsPerHit
+  D:00E8H         PUBLIC        DCON
+  C:0F19H         PUBLIC        main
+  D:004EH         PUBLIC        probka_napiecie
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/04/2018  20:11:18  PAGE 3
+
+
+  C:0E80H         PUBLIC        _pila
+  D:00FDH         PUBLIC        DACCON
+  D:0089H         PUBLIC        TMOD
+  D:00FAH         PUBLIC        DAC0H
+  D:00F9H         PUBLIC        DAC0L
+  B:00A8H.3       PUBLIC        ET1
+  C:0ED4H         PUBLIC        _CalculateTimerHitCount
+  D:008DH         PUBLIC        TH1
+  D:008BH         PUBLIC        TL1
+  C:0CEEH         PUBLIC        timer1
+  B:0088H.6       PUBLIC        TR1
+  C:0F99H         PUBLIC        _SetTimerRegisters
+  -------         PROC          _SECONDSPERHIT
+  D:0032H         SYMBOL        f_osc
+  D:0036H         SYMBOL        parser
+  C:0FC5H         LINE#         14
+  C:0FCDH         LINE#         15
+  C:0FCDH         LINE#         16
+  -------         ENDPROC       _SECONDSPERHIT
+  -------         PROC          _CALCULATETIMERHITCOUNT
+  D:0024H         SYMBOL        time_ms
+  D:0028H         SYMBOL        f_osc
+  D:002CH         SYMBOL        parser
+  -------         DO            
+  D:002EH         SYMBOL        sph
+  -------         ENDDO         
+  C:0ED4H         LINE#         19
+  C:0EDCH         LINE#         20
+  C:0EDCH         LINE#         22
+  C:0EF5H         LINE#         23
+  -------         ENDPROC       _CALCULATETIMERHITCOUNT
+  -------         PROC          _SETTIMERREGISTERS
+  D:0006H         SYMBOL        time_ms
+  -------         DO            
+  D:0020H         SYMBOL        N
+  -------         ENDDO         
+  C:0F99H         LINE#         26
+  C:0F99H         LINE#         27
+  C:0F99H         LINE#         29
+  C:0FBCH         LINE#         30
+  C:0FC1H         LINE#         31
+  C:0FC4H         LINE#         32
+  -------         ENDPROC       _SETTIMERREGISTERS
+  -------         PROC          _MODULO
+  D:000BH         SYMBOL        a
+  D:000FH         SYMBOL        b
+  -------         DO            
+  D:0006H         SYMBOL        result
+  D:0004H         SYMBOL        mod
+  -------         ENDDO         
+  C:0F5DH         LINE#         34
+  C:0F65H         LINE#         35
+  C:0F65H         LINE#         36
+  C:0F73H         LINE#         37
+  -------         ENDPROC       _MODULO
+  -------         PROC          _PILA
+  D:0008H         SYMBOL        syg
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/04/2018  20:11:18  PAGE 4
+
+
+  C:0E80H         LINE#         50
+  C:0E86H         LINE#         51
+  C:0E86H         LINE#         52
+  -------         ENDPROC       _PILA
+  -------         PROC          TIMER1
+  C:0CEEH         LINE#         69
+  C:0D0BH         LINE#         71
+  C:0D12H         LINE#         72
+  C:0D2DH         LINE#         73
+  C:0D4EH         LINE#         74
+  C:0D5FH         LINE#         75
+  C:0D8EH         LINE#         76
+  C:0DB7H         LINE#         77
+  C:0DD3H         LINE#         78
+  C:0DD6H         LINE#         79
+  C:0DD9H         LINE#         80
+  -------         ENDPROC       TIMER1
+  -------         PROC          MAIN
+  C:0F19H         LINE#         82
+  C:0F19H         LINE#         83
+  C:0F19H         LINE#         85
+  C:0F1BH         LINE#         86
+  C:0F1DH         LINE#         87
+  C:0F20H         LINE#         88
+  C:0F23H         LINE#         90
+  C:0F2DH         LINE#         91
+  C:0F37H         LINE#         92
+  C:0F3FH         LINE#         93
+  C:0F47H         LINE#         94
+  C:0F53H         LINE#         96
+  C:0F59H         LINE#         98
+  C:0F5BH         LINE#         99
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+  -------         MODULE        IO
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  -------         ENDMOD        IO
+
+  -------         MODULE        ?C?FPADD
+  C:0807H         PUBLIC        ?C?FPADD
+  C:0803H         PUBLIC        ?C?FPSUB
+  -------         ENDMOD        ?C?FPADD
+
+  -------         MODULE        ?C?FPMUL
+  C:08F8H         PUBLIC        ?C?FPMUL
+  -------         ENDMOD        ?C?FPMUL
+
+  -------         MODULE        ?C?FPDIV
+  C:0A01H         PUBLIC        ?C?FPDIV
+  -------         ENDMOD        ?C?FPDIV
+
+  -------         MODULE        ?C?FPCMP
+  C:0AA0H         PUBLIC        ?C?FPCMP
+  C:0A9EH         PUBLIC        ?C?FPCMP3
+  -------         ENDMOD        ?C?FPCMP
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/04/2018  20:11:18  PAGE 5
+
+
+  -------         MODULE        ?C?FCAST
+  C:0B21H         PUBLIC        ?C?FCASTC
+  C:0B1CH         PUBLIC        ?C?FCASTI
+  C:0B17H         PUBLIC        ?C?FCASTL
+  -------         ENDMOD        ?C?FCAST
+
+  -------         MODULE        ?C?CASTF
+  C:0B55H         PUBLIC        ?C?CASTF
+  -------         ENDMOD        ?C?CASTF
+
+  -------         MODULE        ?C?LNEG
+  C:0BD6H         PUBLIC        ?C?LNEG
+  -------         ENDMOD        ?C?LNEG
+
+  -------         MODULE        ?C?LLDPTR
+  C:0BE4H         PUBLIC        ?C?LLDPTR
+  -------         ENDMOD        ?C?LLDPTR
+
+  -------         MODULE        ?C?LLDOPTR
+  C:0C04H         PUBLIC        ?C?LLDOPTR
+  -------         ENDMOD        ?C?LLDOPTR
+
+  -------         MODULE        ?C?LLDPTR0
+  C:0C34H         PUBLIC        ?C?LLDPTR0
+  -------         ENDMOD        ?C?LLDPTR0
+
+  -------         MODULE        ?C?LLDOPTR0
+  C:0C54H         PUBLIC        ?C?LLDOPTR0
+  -------         ENDMOD        ?C?LLDOPTR0
+
+  -------         MODULE        ?C?LLDIDATA
+  C:0C84H         PUBLIC        ?C?LLDIDATA
+  -------         ENDMOD        ?C?LLDIDATA
+
+  -------         MODULE        ?C?LLDXDATA
+  C:0C90H         PUBLIC        ?C?LLDXDATA
+  -------         ENDMOD        ?C?LLDXDATA
+
+  -------         MODULE        ?C?LLDPDATA
+  C:0C9CH         PUBLIC        ?C?LLDPDATA
+  -------         ENDMOD        ?C?LLDPDATA
+
+  -------         MODULE        ?C?LLDCODE
+  C:0CA8H         PUBLIC        ?C?LLDCODE
+  -------         ENDMOD        ?C?LLDCODE
+
+  -------         MODULE        ?C?LLDIDATA0
+  C:0CB8H         PUBLIC        ?C?LLDIDATA0
+  -------         ENDMOD        ?C?LLDIDATA0
+
+  -------         MODULE        ?C?LLDXDATA0
+  C:0CC5H         PUBLIC        ?C?LLDXDATA0
+  -------         ENDMOD        ?C?LLDXDATA0
+
+  -------         MODULE        ?C?LLDPDATA0
+  C:0CD1H         PUBLIC        ?C?LLDPDATA0
+  -------         ENDMOD        ?C?LLDPDATA0
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/04/2018  20:11:18  PAGE 6
+
+
+
+  -------         MODULE        ?C?LLDCODE0
+  C:0CDEH         PUBLIC        ?C?LLDCODE0
+  -------         ENDMOD        ?C?LLDCODE0
+
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SETTIMERREGISTERS?MAIN
+    CALLER1: ?PR?TIMER1?MAIN
+    CALLER2: ?C_C51STARTUP
+
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_CALCULATETIMERHITCOUNT?MAIN
+    CALLER1: ?PR?TIMER1?MAIN
+    CALLER2: ?C_C51STARTUP
+
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SECONDSPERHIT?MAIN
+    CALLER1: ?PR?TIMER1?MAIN
+    CALLER2: ?C_C51STARTUP
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0273H BYTE (30%) *
+******************************************************************************
+
+Program Size: data=83.0 xdata=0 code=2033
+LINK/LOCATE RUN COMPLETE.  3 WARNING(S),  0 ERROR(S)
