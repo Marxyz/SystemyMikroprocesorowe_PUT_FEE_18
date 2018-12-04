@@ -31,6 +31,7 @@ typedef struct
 	double delta_t;
 	double rosnace;
     double opadajace;
+    double stop;
 }parametry_sygnalu_t;
 
 //float32_t pila(parametry_sygnalu_t* syg)
@@ -42,21 +43,32 @@ typedef struct
 
 float32_t trojkat(parametry_sygnalu_t* syg)
 {
-	float32_t time, result;
+	float32_t time, elapsedInterval,result;
 	double A = syg->amplituda;
 	double T = syg->okres;
 	double off = syg->offset;
 	double ros = syg->rosnace;
     double opad = syg->opadajace;
 	double del = syg->delta_t;
+    double st = syg->stop;
 	time = modulo(syg->t,T);
-	if(time > ros )
+    
+	if(time > ros + st )
 	{
-		result = -A  * 1.0 / (opad) *(time - ros) + A + off;
-        return result;
+        elapsedInterval = ros + st;
+		result = -A  * 1.0 / opad *(time - elapsedInterval) + A + off;
+        
 	}
-		
-	result =   A*time/(ros) + off;
+    else if(time < ros)
+    {
+        result = A*time/(ros) + off;
+        
+    }
+    else
+    {
+        result = A + off;
+    }
+    
     return result;
 }
 
@@ -88,22 +100,21 @@ void timer1() interrupt 3
 
 int main()
 {
-	
 	ET1 = 1;
 	EA = 1;
 	DACCON = 0x7F;
 	TMOD = 0x10;
 	
-	pilaParam.okres = 3.0;
-	pilaParam.amplituda = 3.0;
-	pilaParam.offset = 0;
+	pilaParam.okres = 5.0;
+	pilaParam.amplituda = 4.5;
+	pilaParam.offset = 0.2;
 	pilaParam.t = 0.0;
-	pilaParam.rosnace = 1;
-    pilaParam.opadajace = 2;
+	pilaParam.rosnace = 0.5;
+    pilaParam.opadajace = 3;
+    pilaParam.stop = 1.5;
 	pilaParam.delta_t = ((float32_t)OKRES/1000.0);
 	
 	T1_Set(OKRES)
 	TR1 = 1;
-	while(1){};
-	
+	while(1){};	
 }
