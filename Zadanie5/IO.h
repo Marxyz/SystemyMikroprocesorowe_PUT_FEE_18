@@ -15,6 +15,7 @@
 char _getKey();
 char putchar(char c);
 char UART_putchar(char c);
-void UART_puts(char * str);
+void UART_puts(char* str);
+void UART_gets(char* str);
 
 #endif

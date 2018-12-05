@@ -36,3 +36,13 @@ void UART_puts(char * str)
 		str++;
 	}
 }
+void UART_gets(char* str)
+{
+	//while(SBUF==0x00);
+	while(SBUF != 0x0D)
+	{
+		*str = _getKey();
+		//*str = 'x';
+		str++;
+	}
+}
