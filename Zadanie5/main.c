@@ -214,7 +214,7 @@ int main()
 	
 	//DEFAULTS
 	sygnalParam.okres = 3.0;
-	sygnalParam.amplituda = 5.0;
+	sygnalParam.amplituda = 3.0;
 	sygnalParam.offset = 1;
 	sygnalParam.t = 0.0;
 	sygnalParam.rosnace = 1.5;
