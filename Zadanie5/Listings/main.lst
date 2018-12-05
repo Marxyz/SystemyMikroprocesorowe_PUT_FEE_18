@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   MAIN                                                              12/05/2018 01:34:04 PAGE 1   
+C51 COMPILER V9.59.0.0   MAIN                                                              12/05/2018 03:39:43 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
@@ -28,22 +28,22 @@ line level    source
   18          #define T1_Rejestr(czas_ms) ((0x000001ul<<t_resol)-Tx_N(czas_ms,pars))
   19          #define T1_Set(czas_ms) TL1 = T1_Rejestr(czas_ms);TH1 = T1_Rejestr(czas_ms)>>8;
   20          
-  21          char terminal[10];
-  22          int itr = 0;
-  23          char ready = '0';
-  24          char type = '0';
+  21          xdata char terminal[30];
+  22          xdata int itr = 0;
+  23          xdata int ready = 0;
+  24          xdata char type = 'p';
   25          
-  26          void toneUartInterrupt () interrupt 4
+  26          void uartInterrupt () interrupt 4
   27          {
   28   1        char buffer;
   29   1        if(RI)
   30   1        {
   31   2          buffer = _getKey();
-  32   2          if((buffer == '\r') || itr == 9)
+  32   2          if((buffer == '\r'))
   33   2          { 
   34   3            terminal[itr] = '\0';     
   35   3            itr = 0;
-  36   3            ready = '1';
+  36   3            ready = 1;
   37   3            //strncpy(values, terminal, 6);
   38   3            //UART_puts(terminal);
   39   3            //memset(terminal, 0, sizeof(terminal[0])*20);
@@ -62,123 +62,180 @@ line level    source
   52   1        return;
   53   1      }
   54          
-C51 COMPILER V9.59.0.0   MAIN                                                              12/05/2018 01:34:04 PAGE 2   
+C51 COMPILER V9.59.0.0   MAIN                                                              12/05/2018 03:39:43 PAGE 2   
 
-  55          float32_t modulo(float32_t a, float32_t b)
-  56          {
-  57   1        int16_t result = (int16_t)(a/b);
-  58   1        return  a - (float32_t)(result ) *b;
-  59   1      }
-  60          
-  61          typedef struct
-  62          {
-  63            double okres;
-  64            double amplituda;
-  65            double offset;
-  66            double t;
-  67            double delta_t;
-  68            double param;
-  69          }parametry_sygnalu_t;
-  70          
-  71          //float32_t pila(parametry_sygnalu_t* syg)
-  72          //{
-  73          //  
-  74          //  return syg->amplituda*(modulo(syg->t, (syg->okres)))/(syg->okres) + syg->offset;
-  75          //}
-  76          
-  77          
-  78          float32_t trojkat(parametry_sygnalu_t* syg)
-  79          {
-  80   1        float32_t time, result;
-  81   1        double A = syg->amplituda;
-  82   1        double T = syg->okres;
-  83   1        double off = syg->offset;
-  84   1        double param = syg->param;
-  85   1        double del = syg->delta_t;
-  86   1        time = modulo(syg->t,T);
-  87   1        if(time > param + del)
-  88   1        {
-  89   2          result = -A  * 1.0 / (T - param) *(time - param) + A + off;
-  90   2              return result;
-  91   2        }
-  92   1          
-  93   1        result =   A*time/(param) + off;
-  94   1          return result;
-  95   1      }
-  96          
-  97          typedef union
+  55          /**
+  56           * @brief Floating point modulo operation. Takes two float32_t numbers.
+  57           * 
+  58           * @param a The nominator float32_t number
+  59           * @param b The denominator float32_t number
+  60           * @return float32_t The result of operation.
+  61           */
+  62          float32_t modulo(float32_t a, float32_t b)
+  63          {
+  64   1        int16_t result = (int16_t)(a/b);
+  65   1        return  a - (float32_t)(result ) *b;
+  66   1      }
+  67          
+  68          
+  69          /**
+  70           * @brief Structure representing signal parameters.
+  71           * Okres - singal period interval.
+  72           * Amplituda - signal amplitude.
+  73           * Offset - generating signal offset.
+  74           * t - should not be set, accumulates time for inner calculation
+  75           * delta_t - should not be set, calculated during initialization
+  76           * rosnace - time of signal's rising slope
+  77           * opadajace - time of signal's declining slope.
+  78           */
+  79          typedef struct
+  80          {
+  81            double okres; 
+  82            double amplituda;
+  83            double offset;
+  84            double t;
+  85            double delta_t;
+  86            double rosnace;
+  87            double opadajace;
+  88          }parametry_sygnalu_t;
+  89          
+  90          
+  91          /**
+  92           * @brief Generates single signal sample.
+  93           * 
+  94           * @param parametry_sygnalu_t* syg Signal parameters pointer
+  95           * @return float32_t Calculated sample.
+  96           */
+  97          float32_t GenerateTrojkat(parametry_sygnalu_t* syg)
   98          {
-  99            uint16_t wartosc;
- 100            struct
- 101            {
- 102              uint8_t bajt_gorny;
- 103              uint8_t bajt_dolny;
- 104            }slowo;
- 105          }probka_t;
- 106          
- 107          probka_t probka = {0};
- 108          float32_t probka_napiecie = 0;
- 109          parametry_sygnalu_t pilaParam;
- 110          
- 111          void timer1() interrupt 3
- 112          {
- 113   1        T1_Set(OKRES);
- 114   1        pilaParam.t += pilaParam.delta_t;
- 115   1        if(pilaParam.t > pilaParam.okres)pilaParam.t = pilaParam.delta_t;
- 116   1        probka_napiecie = trojkat(&pilaParam);
-C51 COMPILER V9.59.0.0   MAIN                                                              12/05/2018 01:34:04 PAGE 3   
+  99   1        // Setting values of signal in fixed declaration outside of given reference, in order to save CODE memory
+             -.
+ 100   1        float32_t time, result;
+ 101   1        double A = syg->amplituda;
+ 102   1        double T = syg->okres;
+ 103   1        double off = syg->offset;
+ 104   1        double ros = syg->rosnace;
+ 105   1        double opad = syg->opadajace;
+ 106   1        double del = syg->delta_t;
+ 107   1        time = modulo(syg->t,T);
+ 108   1        if(time > ros )
+ 109   1        {
+ 110   2          result = -A  * 1.0 / (opad) *(time - ros) + A + off;
+ 111   2              return result;
+ 112   2        }
+ 113   1        else
+ 114   1        {
+ 115   2          result =   A*time/(ros) + off;
+C51 COMPILER V9.59.0.0   MAIN                                                              12/05/2018 03:39:43 PAGE 3   
 
- 117   1        probka_napiecie = (probka_napiecie>ca_Vref)? ca_Vref : probka_napiecie;
- 118   1        probka.wartosc = (uint16_t)(probka_napiecie* (1.0 / (1.0 * ca_Vref ))* (float32_t)ca_Maximum_Value);
- 119   1        DAC0H = probka.slowo.bajt_gorny;
- 120   1        DAC0L = probka.slowo.bajt_dolny;
- 121   1      }
- 122          
- 123          int main()
- 124          {
- 125   1        
- 126   1        ET1 = 1;
- 127   1        EA = 1;
- 128   1        ES = 1;
- 129   1        DACCON = 0x7F;
- 130   1        TMOD = 0x10;
- 131   1        
- 132   1        //UART
- 133   1        REN = 1;
- 134   1        SM0 = 0x00;
- 135   1        SM1 = 0x01;
- 136   1        
- 137   1        //TIMER3 SETTINGS
- 138   1        T3CON = 0x81;
- 139   1        T3FD = 0x20;
- 140   1        //PRIORYTETY
- 141   1        PS=1;
- 142   1        PT1=0;
- 143   1        
- 144   1        //DEFAULTS
- 145   1        pilaParam.okres = 4.0;
- 146   1        pilaParam.amplituda = 3.0;
- 147   1        pilaParam.offset = 1.5;
- 148   1        pilaParam.t = 0.0;
- 149   1        pilaParam.param = 1.5;
- 150   1        pilaParam.delta_t = ((float32_t)OKRES/1000.0);
- 151   1        
- 152   1        T1_Set(OKRES);
- 153   1        TR1 = 1;
- 154   1        while(1)
- 155   1        {
- 156   2            
- 157   2        }
- 158   1        
- 159   1      }
+ 116   2        }
+ 117   1          
+ 118   1        
+ 119   1          return result;
+ 120   1      }
+ 121          
+ 122          /**
+ 123           * @brief Union representing sample value in register memory.
+ 124           * 
+ 125           */
+ 126          typedef union
+ 127          {
+ 128            uint16_t wartosc;
+ 129            struct
+ 130            {
+ 131              uint8_t bajt_gorny;
+ 132              uint8_t bajt_dolny;
+ 133            }slowo;
+ 134          }probka_t;
+ 135          
+ 136          xdata probka_t probka = {0};
+ 137          xdata float32_t probka_napiecie = 0;
+ 138          xdata parametry_sygnalu_t sygnalParam;
+ 139          
+ 140          
+ 141          
+ 142          /**
+ 143           * @brief Timer interrupt function.
+ 144           * Generates signal samples and instructs analog outputs to emit signal.
+ 145           *
+ 146           * 
+ 147           */
+ 148          void timer1() interrupt 3
+ 149          {
+ 150   1        T1_Set(OKRES);
+ 151   1        sygnalParam.t += sygnalParam.delta_t;
+ 152   1        if(sygnalParam.t > sygnalParam.okres)sygnalParam.t = sygnalParam.delta_t;
+ 153   1        probka_napiecie = GenerateTrojkat(&sygnalParam);
+ 154   1        probka_napiecie = (probka_napiecie>ca_Vref)? ca_Vref : probka_napiecie;
+ 155   1        probka.wartosc = (uint16_t)(probka_napiecie* (1.0 / (1.0 * ca_Vref ))* (float32_t)ca_Maximum_Value);
+ 156   1        DAC0H = probka.slowo.bajt_gorny;
+ 157   1        DAC0L = probka.slowo.bajt_dolny;
+ 158   1      }
+ 159          
+ 160          
+ 161          /**
+ 162           * @brief Program entry point.
+ 163           * 
+ 164           * @return int
+ 165           */
+ 166          
+ 167          int main()
+ 168          {
+ 169   1        
+ 170   1        ET1 = 1;
+ 171   1        EA = 1;
+ 172   1        ES = 1;
+ 173   1        DACCON = 0x7F;
+ 174   1        TMOD = 0x10;
+ 175   1        
+ 176   1        //UART
+ 177   1        REN = 1;
+C51 COMPILER V9.59.0.0   MAIN                                                              12/05/2018 03:39:43 PAGE 4   
+
+ 178   1        SM0 = 0x00;
+ 179   1        SM1 = 0x01;
+ 180   1        
+ 181   1        //TIMER3 SETTINGS
+ 182   1        T3CON = 0x81;
+ 183   1        T3FD = 0x20;
+ 184   1        //PRIORYTETY
+ 185   1        PS=1;
+ 186   1        PT1=0;
+ 187   1        
+ 188   1        //DEFAULTS
+ 189   1        sygnalParam.okres = 3.0;
+ 190   1        sygnalParam.amplituda = 3.0;
+ 191   1        sygnalParam.offset = 1;
+ 192   1        sygnalParam.t = 0.0;
+ 193   1        sygnalParam.rosnace = 3.0;
+ 194   1        sygnalParam.opadajace = 0.0;
+ 195   1        sygnalParam.delta_t = ((float32_t)OKRES/1000.0);
+ 196   1        
+ 197   1        T1_Set(OKRES)
+ 198   1        TR1 = 1;
+ 199   1        while(1)
+ 200   1        {
+ 201   2          if(ready == 1)
+ 202   2          {
+ 203   3            TR1=0;
+ 204   3            sscanf(terminal, "%c O%f A%f F%f R%f" , &type, &sygnalParam.okres, &sygnalParam.amplituda, &sygnalParam
+             -.offset, &sygnalParam.rosnace);
+ 205   3            sscanf(terminal, "P%f ", &sygnalParam.opadajace);
+ 206   3            memset(terminal, 0, sizeof(terminal[0])*30);
+ 207   3            ready = 0;
+ 208   3            TR1 = 1;
+ 209   3          }
+ 210   2        };
+ 211   1        
+ 212   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    782    ----
-   CONSTANT SIZE    =   ----    ----
-   XDATA SIZE       =   ----    ----
+   CODE SIZE        =    974    ----
+   CONSTANT SIZE    =     24    ----
+   XDATA SIZE       =     69    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     44      36
+   DATA SIZE        =   ----      40
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

@@ -18,22 +18,22 @@
 #define T1_Rejestr(czas_ms) ((0x000001ul<<t_resol)-Tx_N(czas_ms,pars))
 #define T1_Set(czas_ms) TL1 = T1_Rejestr(czas_ms);TH1 = T1_Rejestr(czas_ms)>>8;
 
-char terminal[10];
-int itr = 0;
-char ready = '0';
-char type = '0';
+xdata char terminal[30];
+xdata int itr = 0;
+xdata int ready = 0;
+xdata char type = 'p';
 
-void toneUartInterrupt () interrupt 4
+void uartInterrupt () interrupt 4
 {
 	char buffer;
 	if(RI)
 	{
 		buffer = _getKey();
-		if((buffer == '\r') || itr == 9)
+		if((buffer == '\r'))
 		{	
 			terminal[itr] = '\0';			
 			itr = 0;
-			ready = '1';
+			ready = 1;
 			//strncpy(values, terminal, 6);
 			//UART_puts(terminal);
 			//memset(terminal, 0, sizeof(terminal[0])*20);
@@ -52,48 +52,77 @@ void toneUartInterrupt () interrupt 4
 	return;
 }
 
+/**
+ * @brief Floating point modulo operation. Takes two float32_t numbers.
+ * 
+ * @param a The nominator float32_t number
+ * @param b The denominator float32_t number
+ * @return float32_t The result of operation.
+ */
 float32_t modulo(float32_t a, float32_t b)
 {
 	int16_t result = (int16_t)(a/b);
 	return  a - (float32_t)(result ) *b;
 }
 
+
+/**
+ * @brief Structure representing signal parameters.
+ * Okres - singal period interval.
+ * Amplituda - signal amplitude.
+ * Offset - generating signal offset.
+ * t - should not be set, accumulates time for inner calculation
+ * delta_t - should not be set, calculated during initialization
+ * rosnace - time of signal's rising slope
+ * opadajace - time of signal's declining slope.
+ */
 typedef struct
 {
-	double okres;
+	double okres; 
 	double amplituda;
 	double offset;
 	double t;
 	double delta_t;
-	double param;
+	double rosnace;
+	double opadajace;
 }parametry_sygnalu_t;
 
-//float32_t pila(parametry_sygnalu_t* syg)
-//{
-//	
-//	return syg->amplituda*(modulo(syg->t, (syg->okres)))/(syg->okres) + syg->offset;
-//}
 
-
-float32_t trojkat(parametry_sygnalu_t* syg)
+/**
+ * @brief Generates single signal sample.
+ * 
+ * @param parametry_sygnalu_t* syg Signal parameters pointer
+ * @return float32_t Calculated sample.
+ */
+float32_t GenerateTrojkat(parametry_sygnalu_t* syg)
 {
+	// Setting values of signal in fixed declaration outside of given reference, in order to save CODE memory.
 	float32_t time, result;
 	double A = syg->amplituda;
 	double T = syg->okres;
 	double off = syg->offset;
-	double param = syg->param;
+	double ros = syg->rosnace;
+	double opad = syg->opadajace;
 	double del = syg->delta_t;
 	time = modulo(syg->t,T);
-	if(time > param + del)
+	if(time > ros )
 	{
-		result = -A  * 1.0 / (T - param) *(time - param) + A + off;
+		result = -A  * 1.0 / (opad) *(time - ros) + A + off;
         return result;
 	}
+	else
+	{
+		result =   A*time/(ros) + off;
+	}
 		
-	result =   A*time/(param) + off;
+	
     return result;
 }
 
+/**
+ * @brief Union representing sample value in register memory.
+ * 
+ */
 typedef union
 {
 	uint16_t wartosc;
@@ -104,25 +133,40 @@ typedef union
 	}slowo;
 }probka_t;
 
-probka_t probka = {0};
-float32_t probka_napiecie = 0;
-parametry_sygnalu_t pilaParam;
+xdata probka_t probka = {0};
+xdata float32_t probka_napiecie = 0;
+xdata parametry_sygnalu_t sygnalParam;
 
+
+
+/**
+ * @brief Timer interrupt function.
+ * Generates signal samples and instructs analog outputs to emit signal.
+ *
+ * 
+ */
 void timer1() interrupt 3
 {
 	T1_Set(OKRES);
-	pilaParam.t += pilaParam.delta_t;
-	if(pilaParam.t > pilaParam.okres)pilaParam.t = pilaParam.delta_t;
-	probka_napiecie = trojkat(&pilaParam);
+	sygnalParam.t += sygnalParam.delta_t;
+	if(sygnalParam.t > sygnalParam.okres)sygnalParam.t = sygnalParam.delta_t;
+	probka_napiecie = GenerateTrojkat(&sygnalParam);
 	probka_napiecie = (probka_napiecie>ca_Vref)? ca_Vref : probka_napiecie;
 	probka.wartosc = (uint16_t)(probka_napiecie* (1.0 / (1.0 * ca_Vref ))* (float32_t)ca_Maximum_Value);
 	DAC0H = probka.slowo.bajt_gorny;
 	DAC0L = probka.slowo.bajt_dolny;
 }
 
+
+/**
+ * @brief Program entry point.
+ * 
+ * @return int
+ */
+
 int main()
 {
-	
+	float tmp;
 	ET1 = 1;
 	EA = 1;
 	ES = 1;
@@ -142,18 +186,27 @@ int main()
 	PT1=0;
 	
 	//DEFAULTS
-	pilaParam.okres = 4.0;
-	pilaParam.amplituda = 3.0;
-	pilaParam.offset = 1.5;
-	pilaParam.t = 0.0;
-	pilaParam.param = 1.5;
-	pilaParam.delta_t = ((float32_t)OKRES/1000.0);
+	sygnalParam.okres = 3.0;
+	sygnalParam.amplituda = 3.0;
+	sygnalParam.offset = 1;
+	sygnalParam.t = 0.0;
+	sygnalParam.rosnace = 3.0;
+	sygnalParam.opadajace = 0.0;
+	sygnalParam.delta_t = ((float32_t)OKRES/1000.0);
 	
-	T1_Set(OKRES);
+	T1_Set(OKRES)
 	TR1 = 1;
 	while(1)
 	{
-			
-	}
+		if(ready == 1)
+		{
+			TR1=0;
+			sscanf(terminal, "%c O%f A%f F%f R%f" , &type, &sygnalParam.okres, &sygnalParam.amplituda, &sygnalParam.offset, &sygnalParam.rosnace);
+			sscanf(terminal, "P%f ", &tmp);
+			memset(terminal, 0, sizeof(terminal[0])*30);
+			ready = 0;
+			TR1 = 1;
+		}
+	};
 	
 }
