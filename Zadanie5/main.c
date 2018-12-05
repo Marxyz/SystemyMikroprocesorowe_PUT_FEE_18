@@ -21,6 +21,7 @@
 xdata char terminal[30];
 xdata int itr = 0;
 xdata int ready = 0;
+//p - pila, t - trojkat
 xdata char type = 'p';
 
 void uartInterrupt () interrupt 4
@@ -31,12 +32,9 @@ void uartInterrupt () interrupt 4
 		buffer = _getKey();
 		if((buffer == '\r'))
 		{	
-			terminal[itr] = '\0';			
+			//terminal[itr] = '\0';			
 			itr = 0;
 			ready = 1;
-			//strncpy(values, terminal, 6);
-			//UART_puts(terminal);
-			//memset(terminal, 0, sizeof(terminal[0])*20);
 		}
 		else
 		{
@@ -120,6 +118,18 @@ float32_t GenerateTrojkat(parametry_sygnalu_t* syg)
 }
 
 /**
+ * @brief Generates single signal sample.
+ * 
+ * @param parametry_sygnalu_t* syg Signal parameters pointer
+ * @return float32_t Calculated sample.
+ */
+
+float32_t pila(parametry_sygnalu_t* syg)
+{
+	return syg->amplituda*(modulo(syg->t, (syg->okres)))/(syg->okres) + syg->offset;
+}
+
+/**
  * @brief Union representing sample value in register memory.
  * 
  */
@@ -150,9 +160,25 @@ void timer1() interrupt 3
 	T1_Set(OKRES);
 	sygnalParam.t += sygnalParam.delta_t;
 	if(sygnalParam.t > sygnalParam.okres)sygnalParam.t = sygnalParam.delta_t;
-	probka_napiecie = GenerateTrojkat(&sygnalParam);
-	probka_napiecie = (probka_napiecie>ca_Vref)? ca_Vref : probka_napiecie;
-	probka.wartosc = (uint16_t)(probka_napiecie* (1.0 / (1.0 * ca_Vref ))* (float32_t)ca_Maximum_Value);
+	switch (type){
+		case 'p':
+		{
+			probka_napiecie = pila(&sygnalParam);
+			probka_napiecie = (probka_napiecie>ca_Vref)? ca_Vref : probka_napiecie;
+			probka_napiecie = (probka_napiecie < 0)? 0: probka_napiecie;
+			probka.wartosc = (uint16_t)(probka_napiecie/ca_Vref * (float32_t)ca_Maximum_Value);
+			break;
+		}
+		case 't':
+		{
+			probka_napiecie = GenerateTrojkat(&sygnalParam);
+			probka_napiecie = (probka_napiecie>ca_Vref)? ca_Vref : probka_napiecie;
+			probka.wartosc = (uint16_t)(probka_napiecie* (1.0 / (1.0 * ca_Vref ))* (float32_t)ca_Maximum_Value);
+			break;
+		}
+	}
+	//probka_napiecie = GenerateTrojkat(&sygnalParam);
+	
 	DAC0H = probka.slowo.bajt_gorny;
 	DAC0L = probka.slowo.bajt_dolny;
 }
@@ -167,6 +193,7 @@ void timer1() interrupt 3
 int main()
 {
 	float tmp;
+	int scan;
 	ET1 = 1;
 	EA = 1;
 	ES = 1;
@@ -187,11 +214,11 @@ int main()
 	
 	//DEFAULTS
 	sygnalParam.okres = 3.0;
-	sygnalParam.amplituda = 3.0;
+	sygnalParam.amplituda = 5.0;
 	sygnalParam.offset = 1;
 	sygnalParam.t = 0.0;
-	sygnalParam.rosnace = 3.0;
-	sygnalParam.opadajace = 0.0;
+	sygnalParam.rosnace = 1.5;
+	sygnalParam.opadajace = 1.5;
 	sygnalParam.delta_t = ((float32_t)OKRES/1000.0);
 	
 	T1_Set(OKRES)
@@ -201,8 +228,14 @@ int main()
 		if(ready == 1)
 		{
 			TR1=0;
-			sscanf(terminal, "%c O%f A%f F%f R%f" , &type, &sygnalParam.okres, &sygnalParam.amplituda, &sygnalParam.offset, &sygnalParam.rosnace);
-			sscanf(terminal, "P%f ", &tmp);
+			sscanf(terminal, "%cO%fA%fF%fR%f" , &type, &sygnalParam.okres, &sygnalParam.amplituda, &sygnalParam.offset, &sygnalParam.rosnace);
+//			sscanf(terminal, "%c", &type);
+	//		sscanf(terminal, "O%f", &sygnalParam.okres);
+//			sscanf(terminal, "A%f", &sygnalParam.amplituda);
+//			sscanf(terminal, "F%f", &sygnalParam.offset);
+//			sscanf(terminal, "R%f", &sygnalParam.rosnace);
+			scan = sscanf(terminal, "P%f", &sygnalParam.opadajace);
+			//sscanf(terminal, "T%f", &tmp);
 			memset(terminal, 0, sizeof(terminal[0])*30);
 			ready = 0;
 			TR1 = 1;
