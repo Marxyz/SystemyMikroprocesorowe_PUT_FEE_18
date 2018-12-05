@@ -18,12 +18,25 @@
 #define T1_Rejestr(czas_ms) ((0x000001ul<<t_resol)-Tx_N(czas_ms,pars))
 #define T1_Set(czas_ms) TL1 = T1_Rejestr(czas_ms);TH1 = T1_Rejestr(czas_ms)>>8;
 
+#define RAMKA_OKRES (2)
+#define RAMKA_AMPLITUDA (6)
+#define RAMKA_OFFSET (10)
+#define RAMKA_ROSNACE (14)
+#define RAMKA_OPADAJACE (18)
+
 xdata char terminal[30];
 xdata int itr = 0;
 xdata int ready = 0;
 //p - pila, t - trojkat
 xdata char type = 'p';
 
+/**
+ * @brief UART interrupt to fill terminal.
+ *
+ * line of data specified as:
+ * char type of plot, float amplitude, float offset
+ * float rosnace, float opadajace. Formatted without ',' delimiter
+ */
 void uartInterrupt () interrupt 4
 {
 	char buffer;
@@ -32,7 +45,7 @@ void uartInterrupt () interrupt 4
 		buffer = _getKey();
 		if((buffer == '\r'))
 		{	
-			//terminal[itr] = '\0';			
+			terminal[itr] = '\0';			
 			itr = 0;
 			ready = 1;
 		}
@@ -183,6 +196,44 @@ void timer1() interrupt 3
 	DAC0L = probka.slowo.bajt_dolny;
 }
 
+void getParameters()
+{
+	xdata float tmp;
+	xdata char string[4];
+	if(ready == 1)
+		{
+			TR1=0;
+			//sscanf(terminal, "%cO%fA%fF%fR%fP%g" , &type, &sygnalParam.okres, &sygnalParam.amplituda, &sygnalParam.offset, &sygnalParam.rosnace, &sygnalParam.opadajace);
+			//tmp = (float)(atoi(&terminal[2])) + (float)(atoi(&terminal[4]))/10 ;
+			//sygnalParam.okres = tmp;
+			
+			memcpy(string, &terminal[RAMKA_OKRES],3);
+			string[3] = '\0';
+			sygnalParam.okres = atof(string);
+			memset(string,0,4);
+			
+			memcpy(string, &terminal[RAMKA_AMPLITUDA],3);
+			string[3] = '\0';
+			sygnalParam.amplituda = atof(string);
+			memset(string,0,4);
+			
+			memcpy(string, &terminal[RAMKA_OFFSET],3);
+			sygnalParam.offset = atof(string);
+			memset(string,0,4);
+			
+			memcpy(string, &terminal[RAMKA_ROSNACE],3);
+			sygnalParam.rosnace = atof(string);
+			memset(string,0,4);
+			
+			memcpy(string, &terminal[RAMKA_OPADAJACE],3);
+			sygnalParam.opadajace = atof(string);
+			memset(string,0,4);
+			
+			memset(terminal, 0, sizeof(terminal[0])*30);
+			ready = 0;
+			TR1 = 1;
+		}
+}
 
 /**
  * @brief Program entry point.
@@ -192,15 +243,14 @@ void timer1() interrupt 3
 
 int main()
 {
-	float tmp;
-	int scan;
 	ET1 = 1;
 	EA = 1;
+	// UART INTERRUPT
 	ES = 1;
 	DACCON = 0x7F;
 	TMOD = 0x10;
 	
-	//UART
+	
 	REN = 1;
 	SM0 = 0x00;
 	SM1 = 0x01;
@@ -208,13 +258,14 @@ int main()
 	//TIMER3 SETTINGS
 	T3CON = 0x81;
 	T3FD = 0x20;
-	//PRIORYTETY
+	
+	//INTERRUPT PRIORITY
 	PS=1;
 	PT1=0;
 	
 	//DEFAULTS
 	sygnalParam.okres = 3.0;
-	sygnalParam.amplituda = 5.0;
+	sygnalParam.amplituda = 4.0;
 	sygnalParam.offset = 1;
 	sygnalParam.t = 0.0;
 	sygnalParam.rosnace = 1.5;
@@ -225,21 +276,7 @@ int main()
 	TR1 = 1;
 	while(1)
 	{
-		if(ready == 1)
-		{
-			TR1=0;
-			sscanf(terminal, "%cO%fA%fF%fR%f" , &type, &sygnalParam.okres, &sygnalParam.amplituda, &sygnalParam.offset, &sygnalParam.rosnace);
-//			sscanf(terminal, "%c", &type);
-	//		sscanf(terminal, "O%f", &sygnalParam.okres);
-//			sscanf(terminal, "A%f", &sygnalParam.amplituda);
-//			sscanf(terminal, "F%f", &sygnalParam.offset);
-//			sscanf(terminal, "R%f", &sygnalParam.rosnace);
-			scan = sscanf(terminal, "P%f", &sygnalParam.opadajace);
-			//sscanf(terminal, "T%f", &tmp);
-			memset(terminal, 0, sizeof(terminal[0])*30);
-			ready = 0;
-			TR1 = 1;
-		}
+		getParameters();
 	};
 	
 }
