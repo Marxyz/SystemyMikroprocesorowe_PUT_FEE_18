@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    12/04/2018  23:11:39  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    12/05/2018  01:42:11  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
@@ -49,35 +49,35 @@ LINK MAP OF MODULE:  .\Objects\DAC_Pila (MAIN)
             CODE    001BH     0003H     ABSOLUTE     
                     001EH     07E2H                  *** GAP ***
             CODE    0800H     0479H     UNIT         ?C?LIB_CODE
-            CODE    0C79H     0100H     UNIT         ?PR?_TROJKAT?MAIN
+            CODE    0C79H     0100H     UNIT         ?PR?_GENERATETROJKAT?MAIN
             CODE    0D79H     00DCH     UNIT         ?PR?TIMER1?MAIN
             CODE    0E55H     008CH     UNIT         ?C_C51STARTUP
-            CODE    0EE1H     0058H     UNIT         ?PR?MAIN?MAIN
-            CODE    0F39H     003CH     UNIT         ?PR?_MODULO?MAIN
-            CODE    0F75H     000BH     UNIT         ?C_INITSEG
+            CODE    0EE1H     0059H     UNIT         ?PR?MAIN?MAIN
+            CODE    0F3AH     003CH     UNIT         ?PR?_MODULO?MAIN
+            CODE    0F76H     000BH     UNIT         ?C_INITSEG
 
 
 
 OVERLAY MAP OF MODULE:   .\Objects\DAC_Pila (MAIN)
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/04/2018  23:11:39  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/05/2018  01:42:11  PAGE 2
 
 
 
 
-SEGMENT                          DATA_GROUP 
-  +--> CALLED SEGMENT          START    LENGTH
-----------------------------------------------
-?PR?TIMER1?MAIN                -----    -----
-  +--> ?PR?_TROJKAT?MAIN
+SEGMENT                             DATA_GROUP 
+  +--> CALLED SEGMENT             START    LENGTH
+-------------------------------------------------
+?PR?TIMER1?MAIN                   -----    -----
+  +--> ?PR?_GENERATETROJKAT?MAIN
 
-?PR?_TROJKAT?MAIN              0008H    0020H
+?PR?_GENERATETROJKAT?MAIN         0008H    0020H
   +--> ?PR?_MODULO?MAIN
 
-?PR?_MODULO?MAIN               0028H    0008H
+?PR?_MODULO?MAIN                  0028H    0008H
 
 *** NEW ROOT ***************************************************
 
-?C_C51STARTUP                  -----    -----
+?C_C51STARTUP                     -----    -----
   +--> ?PR?MAIN?MAIN
   +--> ?C_INITSEG
 
@@ -91,10 +91,10 @@ SYMBOL TABLE OF MODULE:  .\Objects\DAC_Pila (MAIN)
   -------         MODULE        MAIN
   C:0000H         SYMBOL        _ICE_DUMMY_
   D:0030H         PUBLIC        probka
-  C:0C79H         PUBLIC        _trojkat
   B:00A8H.7       PUBLIC        EA
-  C:0F39H         PUBLIC        _modulo
-  D:0032H         PUBLIC        pilaParam
+  D:0032H         PUBLIC        sygnalParam
+  C:0F3AH         PUBLIC        _modulo
+  C:0C79H         PUBLIC        _GenerateTrojkat
   D:00E8H         PUBLIC        I2CCON
   D:00E8H         PUBLIC        DCON
   C:0EE1H         PUBLIC        main
@@ -114,15 +114,15 @@ SYMBOL TABLE OF MODULE:  .\Objects\DAC_Pila (MAIN)
   -------         DO            
   D:0006H         SYMBOL        result
   -------         ENDDO         
-  C:0F39H         LINE#         19
-  C:0F41H         LINE#         20
-  C:0F41H         LINE#         21
-  C:0F4FH         LINE#         22
+  C:0F3AH         LINE#         25
+  C:0F42H         LINE#         26
+  C:0F42H         LINE#         27
+  C:0F50H         LINE#         28
   -------         ENDPROC       _MODULO
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/04/2018  23:11:39  PAGE 3
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/05/2018  01:42:11  PAGE 3
 
 
-  -------         PROC          _TROJKAT
+  -------         PROC          _GENERATETROJKAT
   D:0001H         SYMBOL        syg
   -------         DO            
   D:0008H         SYMBOL        time
@@ -134,56 +134,58 @@ SYMBOL TABLE OF MODULE:  .\Objects\DAC_Pila (MAIN)
   D:0020H         SYMBOL        opad
   D:0024H         SYMBOL        del
   -------         ENDDO         
-  C:0C79H         LINE#         43
-  C:0C79H         LINE#         44
-  C:0C79H         LINE#         46
-  C:0C87H         LINE#         47
-  C:0C92H         LINE#         48
-  C:0CA0H         LINE#         49
-  C:0CAEH         LINE#         50
-  C:0CBCH         LINE#         51
-  C:0CCAH         LINE#         52
-  C:0CE7H         LINE#         53
-  C:0CFEH         LINE#         54
-  C:0CFEH         LINE#         55
-  C:0D45H         LINE#         56
-  C:0D47H         LINE#         57
-  C:0D47H         LINE#         59
-  C:0D78H         LINE#         60
-  C:0D78H         LINE#         61
-  -------         ENDPROC       _TROJKAT
+  C:0C79H         LINE#         60
+  C:0C79H         LINE#         61
+  C:0C79H         LINE#         64
+  C:0C87H         LINE#         65
+  C:0C92H         LINE#         66
+  C:0CA0H         LINE#         67
+  C:0CAEH         LINE#         68
+  C:0CBCH         LINE#         69
+  C:0CCAH         LINE#         70
+  C:0CE7H         LINE#         71
+  C:0CFEH         LINE#         72
+  C:0CFEH         LINE#         73
+  C:0D45H         LINE#         74
+  C:0D47H         LINE#         75
+  C:0D47H         LINE#         77
+  C:0D47H         LINE#         78
+  C:0D78H         LINE#         79
+  C:0D78H         LINE#         82
+  C:0D78H         LINE#         83
+  -------         ENDPROC       _GENERATETROJKAT
   -------         PROC          TIMER1
-  C:0D79H         LINE#         77
-  C:0D96H         LINE#         79
-  C:0D9CH         LINE#         80
-  C:0DB7H         LINE#         81
-  C:0DDAH         LINE#         82
-  C:0DEBH         LINE#         83
-  C:0E1AH         LINE#         84
-  C:0E34H         LINE#         85
-  C:0E37H         LINE#         86
-  C:0E3AH         LINE#         87
+  C:0D79H         LINE#         111
+  C:0D96H         LINE#         113
+  C:0D9CH         LINE#         114
+  C:0DB7H         LINE#         115
+  C:0DDAH         LINE#         116
+  C:0DEBH         LINE#         117
+  C:0E1AH         LINE#         118
+  C:0E34H         LINE#         119
+  C:0E37H         LINE#         120
+  C:0E3AH         LINE#         121
   -------         ENDPROC       TIMER1
   -------         PROC          MAIN
-  C:0EE1H         LINE#         89
-  C:0EE1H         LINE#         90
-  C:0EE1H         LINE#         92
-  C:0EE3H         LINE#         93
-  C:0EE5H         LINE#         94
-  C:0EE8H         LINE#         95
-  C:0EEBH         LINE#         97
-  C:0EF6H         LINE#         98
-  C:0F00H         LINE#         99
-  C:0F08H         LINE#         100
-  C:0F10H         LINE#         101
-  C:0F1AH         LINE#         102
-  C:0F23H         LINE#         103
-  C:0F2FH         LINE#         105
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/04/2018  23:11:39  PAGE 4
+  C:0EE1H         LINE#         129
+  C:0EE1H         LINE#         130
+  C:0EE1H         LINE#         132
+  C:0EE3H         LINE#         133
+  C:0EE5H         LINE#         134
+  C:0EE8H         LINE#         135
+  C:0EEBH         LINE#         137
+  C:0EF6H         LINE#         138
+  C:0F00H         LINE#         139
+  C:0F0AH         LINE#         140
+  C:0F12H         LINE#         141
+  C:0F1CH         LINE#         142
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/05/2018  01:42:11  PAGE 4
 
 
-  C:0F35H         LINE#         106
-  C:0F37H         LINE#         107
+  C:0F24H         LINE#         143
+  C:0F30H         LINE#         145
+  C:0F36H         LINE#         146
+  C:0F38H         LINE#         147
   -------         ENDPROC       MAIN
   -------         ENDMOD        MAIN
 
@@ -237,10 +239,10 @@ SYMBOL TABLE OF MODULE:  .\Objects\DAC_Pila (MAIN)
 
   -------         MODULE        ?C?LLDIDATA
   C:0C45H         PUBLIC        ?C?LLDIDATA
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/05/2018  01:42:11  PAGE 5
+
+
   -------         ENDMOD        ?C?LLDIDATA
-
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  12/04/2018  23:11:39  PAGE 5
-
 
   -------         MODULE        ?C?LLDXDATA
   C:0C51H         PUBLIC        ?C?LLDXDATA
@@ -255,8 +257,8 @@ SYMBOL TABLE OF MODULE:  .\Objects\DAC_Pila (MAIN)
   -------         ENDMOD        ?C?LLDCODE
 
 ******************************************************************************
-* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 027DH BYTE (31%) *
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 027EH BYTE (31%) *
 ******************************************************************************
 
-Program Size: data=83.0 xdata=0 code=1926
+Program Size: data=83.0 xdata=0 code=1927
 LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
