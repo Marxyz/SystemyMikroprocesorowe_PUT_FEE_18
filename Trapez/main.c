@@ -2,7 +2,7 @@
 #include "stdint.h" 	//Standard integers
 #include "stdfloat.h" //Standard float
 #include "IO.h"				//Input/output definitions
-#include <stdlib.h>
+
 #define ca_Vref 5.0
 #define ca_Resolution 12
 #define ca_Maximum_Value ((0x000001ul<<ca_Resolution)-1)
@@ -16,12 +16,32 @@
 #define T1_Rejestr(czas_ms) ((0x000001ul<<t_resol)-Tx_N(czas_ms,pars))
 #define T1_Set(czas_ms) TL1 = T1_Rejestr(czas_ms);TH1 = T1_Rejestr(czas_ms)>>8;
 
+
+
+/**
+ * @brief Generates single signal sample.
+ * 
+ * @param parametry_sygnalu_t* syg Signal parameters pointer
+ * @return float32_t Calculated sample.
+ */
 float32_t modulo(float32_t a, float32_t b)
 {
 	int16_t result = (int16_t)(a/b);
 	return  a - (float32_t)(result ) *b;
 }
 
+
+/**
+ * @brief Structure representing signal parameters.
+ * Okres - singal period interval.
+ * Amplituda - signal amplitude.
+ * Offset - generating signal offset.
+ * t - should not be set, accumulates time for inner calculation
+ * delta_t - should not be set, calculated during initialization
+ * rosnace - interval time of signal's rising slope
+ * opadajace - interval time of signal's declining slope.
+ * stop - interval time of holding trapezoid amplitude value. 
+ */
 typedef struct
 {
 	double okres;
@@ -34,15 +54,16 @@ typedef struct
     double stop;
 }parametry_sygnalu_t;
 
-//float32_t pila(parametry_sygnalu_t* syg)
-//{
-//	
-//	return syg->amplituda*(modulo(syg->t, (syg->okres)))/(syg->okres) + syg->offset;
-//}
 
-
-float32_t trojkat(parametry_sygnalu_t* syg)
+/**
+ * @brief Generates single signal sample.
+ * 
+ * @param parametry_sygnalu_t* syg Signal parameters pointer
+ * @return float32_t Calculated sample.
+ */
+float32_t GenerateTrapezoid(parametry_sygnalu_t* syg)
 {
+	// Setting values of signal in fixed declaration outside of given reference, in order to save CODE memory.
 	float32_t time, elapsedInterval,result;
 	double A = syg->amplituda;
 	double T = syg->okres;
@@ -71,7 +92,10 @@ float32_t trojkat(parametry_sygnalu_t* syg)
     
     return result;
 }
-
+/**
+ * @brief Union representing sample value in register memory.
+ * 
+ */
 typedef union
 {
 	uint16_t wartosc;
@@ -84,19 +108,33 @@ typedef union
 
 probka_t probka = {0};
 float32_t probka_napiecie = 0;
-parametry_sygnalu_t pilaParam;
+parametry_sygnalu_t signalParam;
 
+/**
+ * @brief Timer interrupt function.
+ * Generates signal samples and instructs analog outputs to emit signal.
+ *
+ * 
+ */
 void timer1() interrupt 3
 {
+	
 	T1_Set(OKRES);
-	pilaParam.t += pilaParam.delta_t;
-	if(pilaParam.t > pilaParam.okres)pilaParam.t = pilaParam.delta_t;
-	probka_napiecie = trojkat(&pilaParam);
+	signalParam.t += signalParam.delta_t;
+	if(signalParam.t > signalParam.okres)signalParam.t = signalParam.delta_t;
+	probka_napiecie = GenerateTrapezoid(&signalParam);
 	probka_napiecie = (probka_napiecie>ca_Vref)? ca_Vref : probka_napiecie;
 	probka.wartosc = (uint16_t)(probka_napiecie* (1.0 / (1.0 * ca_Vref ))* (float32_t)ca_Maximum_Value);
 	DAC0H = probka.slowo.bajt_gorny;
 	DAC0L = probka.slowo.bajt_dolny;
 }
+
+
+/**
+ * @brief Program entry point.
+ * 
+ * @return int
+ */
 
 int main()
 {
@@ -105,14 +143,14 @@ int main()
 	DACCON = 0x7F;
 	TMOD = 0x10;
 	
-	pilaParam.okres = 5.0;
-	pilaParam.amplituda = 4.5;
-	pilaParam.offset = 0.2;
-	pilaParam.t = 0.0;
-	pilaParam.rosnace = 0.5;
-    pilaParam.opadajace = 3;
-    pilaParam.stop = 1.5;
-	pilaParam.delta_t = ((float32_t)OKRES/1000.0);
+	signalParam.okres = 5.0;
+	signalParam.amplituda = 4.5;
+	signalParam.offset = 0.2;
+	signalParam.t = 0.0;
+	signalParam.rosnace = 0.5;
+    signalParam.opadajace = 3;
+    signalParam.stop = 1.5;
+	signalParam.delta_t = ((float32_t)OKRES/1000.0);
 	
 	T1_Set(OKRES)
 	TR1 = 1;
