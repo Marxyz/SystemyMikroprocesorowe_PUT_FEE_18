@@ -149,7 +149,7 @@ int main()
 	signalParam.t = 0.0;
 	signalParam.rosnace = 0.001;
     signalParam.opadajace = 0.001;
-    signalParam.stop = 4.998;
+    signalParam.stop = 2;
 	signalParam.delta_t = ((float32_t)OKRES/1000.0);
 	
 	T1_Set(OKRES)
