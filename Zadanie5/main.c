@@ -1,10 +1,10 @@
-#include "aduc831.h"	//Definitions of ADuC831 registers name
-#include "stdint.h" 	//Standard integers
-#include "stdfloat.h" //Standard float
-#include "IO.h"				//Input/output definitions
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#include "aduc831.h"	/* Definitions of ADuC831 registers name */
+#include "stdint.h" 	/* Standard integers */
+#include "stdfloat.h"  /* Standard float */
+#include "IO.h"				/* Input/output definitions */
+#include <stdlib.h> /* for atof() */
+#include <string.h> /* for memset() and memcpy() */
+
 #define ca_Vref 5.0
 #define ca_Resolution 12
 #define ca_Maximum_Value ((0x000001ul<<ca_Resolution)-1)
@@ -24,11 +24,32 @@
 #define RAMKA_ROSNACE (14)
 #define RAMKA_OPADAJACE (18)
 
+/*! 
+@var char terminal[30] 
+@brief Input from user.  
+*/
 xdata char terminal[30];
+
+/*! 
+@var int itr 
+@brief Iterator used in UART Interrupt.  
+*/
 xdata int itr = 0;
+
+/*! 
+@var int ready 
+@brief Flag setted by UART Interrupt when input from user was read. 
+*/
 xdata int ready = 0;
-//p - pila, t - trojkat
+
+/*! 
+@var char type 
+@brief Represents currently emitted signal. 
+ * p - pila
+ * t - prostokat
+*/
 xdata char type = 'p';
+
 
 /**
  * @brief UART interrupt to fill terminal.
@@ -195,6 +216,13 @@ void timer1() interrupt 3
 	DAC0H = probka.slowo.bajt_gorny;
 	DAC0L = probka.slowo.bajt_dolny;
 }
+
+/**
+ * @brief Getting parameters from input and setting them to global sygnalParam structure.
+ * 
+ * @bug using sscanf - probably undefined behaviour, cannot read more than 5 floats, but return value from sscanf is correct.
+ * @return void
+ */
 
 void getParameters()
 {

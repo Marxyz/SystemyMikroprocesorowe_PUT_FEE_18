@@ -1,10 +1,10 @@
-C51 COMPILER V9.59.0.0   IO                                                                12/05/2018 20:25:30 PAGE 1   
+C51 COMPILER V9.59.0.0   IO                                                                12/06/2018 00:59:38 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE IO
 OBJECT MODULE PLACED IN .\Objects\IO.obj
-COMPILER INVOKED BY: C:\Users\Arkadiusz\Keil_v5\C51\BIN\C51.EXE IO.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.
-                    -\Listings\IO.lst) OBJECT(.\Objects\IO.obj)
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE IO.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\IO.lst
+                    -) TABS(2) OBJECT(.\Objects\IO.obj)
 
 line level    source
 
@@ -17,34 +17,34 @@ line level    source
    7          #include "IO.h"
    8          char _getKey()
    9          {
-  10   1              char c;
-  11   1              while(!RI);
-  12   1              c = SBUF;
-  13   1              RI = 0;
-  14   1              return c;
+  10   1        char c;
+  11   1        while(!RI);
+  12   1        c = SBUF;
+  13   1        RI = 0;
+  14   1        return c;
   15   1      }
   16          
   17          char putchar(char c)
   18          {
-  19   1              while(!TI);
-  20   1              TI = 0;
-  21   1              return c;
+  19   1        while(!TI);
+  20   1        TI = 0;
+  21   1        return c;
   22   1      }
   23          
   24          char UART_putchar(char c)
   25          {
-  26   1              SBUF = c;
-  27   1              while(!TI);
-  28   1              TI = 0;
-  29   1              return c;
+  26   1        SBUF = c;
+  27   1        while(!TI);
+  28   1        TI = 0;
+  29   1        return c;
   30   1      }
   31          void UART_puts(char * str)
   32          {
-  33   1              while(*str != '\0')
-  34   1              {
-  35   2                      UART_putchar(*str);
-  36   2                      str++;
-  37   2              }
+  33   1        while(*str != '\0')
+  34   1        {
+  35   2          UART_putchar(*str);
+  36   2          str++;
+  37   2        }
   38   1      }
 
 
