@@ -18,11 +18,14 @@
 #define T1_Rejestr(czas_ms) ((0x000001ul<<t_resol)-Tx_N(czas_ms,pars))
 #define T1_Set(czas_ms) TL1 = T1_Rejestr(czas_ms);TH1 = T1_Rejestr(czas_ms)>>8;
 
+#define RAMKA_TYP (0)
 #define RAMKA_OKRES (2)
 #define RAMKA_AMPLITUDA (6)
 #define RAMKA_OFFSET (10)
 #define RAMKA_ROSNACE (14)
 #define RAMKA_OPADAJACE (18)
+
+#define MAX_V = 5;
 
 /*! 
 @var char terminal[30] 
@@ -234,6 +237,7 @@ void getParameters()
 			//sscanf(terminal, "%cO%fA%fF%fR%fP%g" , &type, &sygnalParam.okres, &sygnalParam.amplituda, &sygnalParam.offset, &sygnalParam.rosnace, &sygnalParam.opadajace);
 			//tmp = (float)(atoi(&terminal[2])) + (float)(atoi(&terminal[4]))/10 ;
 			//sygnalParam.okres = tmp;
+			type = terminal[RAMKA_TYP];
 			
 			memcpy(string, &terminal[RAMKA_OKRES],3);
 			string[3] = '\0';
@@ -246,14 +250,17 @@ void getParameters()
 			memset(string,0,4);
 			
 			memcpy(string, &terminal[RAMKA_OFFSET],3);
+			string[3] = '\0';
 			sygnalParam.offset = atof(string);
 			memset(string,0,4);
 			
 			memcpy(string, &terminal[RAMKA_ROSNACE],3);
+			string[3] = '\0';
 			sygnalParam.rosnace = atof(string);
 			memset(string,0,4);
 			
 			memcpy(string, &terminal[RAMKA_OPADAJACE],3);
+			string[3] = '\0';
 			sygnalParam.opadajace = atof(string);
 			memset(string,0,4);
 			
