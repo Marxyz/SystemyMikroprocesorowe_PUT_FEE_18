@@ -24,6 +24,7 @@
 #define RAMKA_OFFSET (10)
 #define RAMKA_ROSNACE (14)
 #define RAMKA_OPADAJACE (18)
+#define RAMKA_STOP (22)
 
 #define MAX_V = 5;
 
@@ -49,7 +50,9 @@ xdata int ready = 0;
 @var char type 
 @brief Represents currently emitted signal. 
  * p - pila
- * t - prostokat
+ * t - trojkat
+ * z - trapezoid
+ * 
 */
 xdata char type = 'p';
 
@@ -110,18 +113,57 @@ float32_t modulo(float32_t a, float32_t b)
  * delta_t - should not be set, calculated during initialization
  * rosnace - time of signal's rising slope
  * opadajace - time of signal's declining slope.
+ * stop - interval time of holding trapezoid amplitude value.
  */
 typedef struct
 {
-	double okres; 
+	double okres;
 	double amplituda;
 	double offset;
 	double t;
 	double delta_t;
 	double rosnace;
 	double opadajace;
+	double stop;
 }parametry_sygnalu_t;
 
+/**
+ * @brief Generates single signal sample.
+ * 
+ * @param parametry_sygnalu_t* syg Signal parameters pointer
+ * @return float32_t Calculated sample.
+ */
+float32_t GenerateTrapezoid(parametry_sygnalu_t* syg)
+{
+	// Setting values of signal in fixed declaration outside of given reference, in order to save CODE memory.
+	float32_t time, elapsedInterval,result;
+	double A = syg->amplituda;
+	double T = syg->okres;
+	double off = syg->offset;
+	double ros = syg->rosnace;
+    double opad = syg->opadajace;
+	double del = syg->delta_t;
+    double st = syg->stop;
+	time = modulo(syg->t,T);
+    
+	if(time > ros + st )
+	{
+        elapsedInterval = ros + st;
+		result = -A  * 1.0 / opad *(time - elapsedInterval) + A + off;
+        
+	}
+    else if(time < ros)
+    {
+        result = A*time/(ros) + off;
+        
+    }
+    else
+    {
+        result = A + off;
+    }
+    
+    return result;
+}
 
 /**
  * @brief Generates single signal sample.
@@ -213,9 +255,24 @@ void timer1() interrupt 3
 			probka.wartosc = (uint16_t)(probka_napiecie* (1.0 / (1.0 * ca_Vref ))* (float32_t)ca_Maximum_Value);
 			break;
 		}
+		case 'z':
+		{
+			probka_napiecie = GenerateTrapezoid(&sygnalParam);
+			probka_napiecie = (probka_napiecie>ca_Vref)? ca_Vref : probka_napiecie;
+			probka.wartosc = (uint16_t)(probka_napiecie* (1.0 / (1.0 * ca_Vref ))* (float32_t)ca_Maximum_Value);
+			break;
+		}
+		case 'r':
+		{
+			//sygnalParam.rosnace = 0.001;
+			//sygnalParam.opadajace = 0.001;
+			probka_napiecie = GenerateTrapezoid(&sygnalParam);
+			probka_napiecie = (probka_napiecie>ca_Vref)? ca_Vref : probka_napiecie;
+			probka.wartosc = (uint16_t)(probka_napiecie* (1.0 / (1.0 * ca_Vref ))* (float32_t)ca_Maximum_Value);
+			break;
+		}
+		
 	}
-	//probka_napiecie = GenerateTrojkat(&sygnalParam);
-	
 	DAC0H = probka.slowo.bajt_gorny;
 	DAC0L = probka.slowo.bajt_dolny;
 }
@@ -264,6 +321,11 @@ void getParameters()
 			sygnalParam.opadajace = atof(string);
 			memset(string,0,4);
 			
+			memcpy(string, &terminal[RAMKA_STOP],3);
+			string[3] = '\0';
+			sygnalParam.stop = atof(string);
+			memset(string,0,4);
+			
 			memset(terminal, 0, sizeof(terminal[0])*30);
 			ready = 0;
 			TR1 = 1;
@@ -303,8 +365,9 @@ int main()
 	sygnalParam.amplituda = 3.0;
 	sygnalParam.offset = 1;
 	sygnalParam.t = 0.0;
-	sygnalParam.rosnace = 1.5;
-	sygnalParam.opadajace = 1.5;
+	sygnalParam.rosnace = 0.001;
+	sygnalParam.opadajace = 0.001;
+	sygnalParam.stop = 1.5;
 	sygnalParam.delta_t = ((float32_t)OKRES/1000.0);
 	
 	T1_Set(OKRES)
