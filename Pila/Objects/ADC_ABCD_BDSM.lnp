@@ -1,4 +1,0 @@
-".\Objects\main.obj",
-".\Objects\IO.obj" 
-TO ".\Objects\ADC_ABCD_BDSM" 
-PRINT(".\Listings\ADC_ABCD_BDSM.m51") RAMSIZE(256) 
